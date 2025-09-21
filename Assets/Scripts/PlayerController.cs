@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     // Reference the Player Pawn
-    public PlayerPawn pawn; 
+    public PlayerPawn pawn;
     // Update is called once per frame
     void Update()
     {
@@ -37,27 +37,51 @@ public class PlayerController : MonoBehaviour
         // Up arrow key input 
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            // PlayPawn teleport up (up on 2D screen)
+            // PlayerPawn teleport up (up on 2D screen)
             pawn.MoveUpWorld();
         }
         // Down arrow key input
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            // PlayPawn teleport down (down on 2D screen)
+            // PlayerPawn teleport down (down on 2D screen)
             pawn.MoveDownWorld();
         }
         // Left arrow key input
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            // PlayPawn teleport left (left on 2D screen)
+            // PlayerPawn teleport left (left on 2D screen)
             pawn.MoveLeftWorld();
         }
         // Right arrow key input
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            // PlayPawn teleport right (right on 2D screen)
+            // PlayerPawn teleport right (right on 2D screen)
             pawn.MoveRightWorld();
         }
+        // T key input
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            // PlayerPawn teleported to a random location
+            pawn.TeleportRandom();
+        }
+        //Turbo!
+        // W key input
+        if (Input.GetKey(KeyCode.W))
+        {
+            // Right or Left Shift input
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                // Turbo forward movement
+                pawn.TurboForward();
+            }
+            else
+            {
+                // Normal forward movement
+                pawn.MoveForward();
+            }
+        }
+
     }
 }
+
 

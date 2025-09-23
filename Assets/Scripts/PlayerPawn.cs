@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerPawn : MonoBehaviour
+public class PlayerPawn : Pawn
 {
     // Variable to hold our sprite Transform information
     private Transform tf;

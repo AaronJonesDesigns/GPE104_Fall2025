@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6c4d1368541da7346bbfd087b9a29a7c
+guid: 2b1b8056f6d8b1f45a1f2879e054237b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -910207976613999885
-    second: starShip_0
+      213: -2346302928887187388
+    second: bullet_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: starShip_0
+      name: bullet_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 99
-        height: 75
+        width: 9
+        height: 9
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3fa0232faaa4e53f0800000000000000
-      internalID: -910207976613999885
+      spriteID: 448783cdae1407fd0800000000000000
+      internalID: -2346302928887187388
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      starShip_0: -910207976613999885
+      bullet_0: -2346302928887187388
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

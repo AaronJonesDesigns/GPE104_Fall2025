@@ -7,6 +7,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            pawn.shooter.Shoot(); 
+        }
         // Local Movement Controls (WASD)
         // W key input
         if (Input.GetKey(KeyCode.W))
@@ -69,7 +73,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             // Right or Left Shift input
-            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            if (Input.GetKey(KeyCode.Mouse1))
             {
                 // Turbo forward movement
                 pawn.TurboForward();
@@ -79,6 +83,8 @@ public class PlayerController : MonoBehaviour
                 // Normal forward movement
                 pawn.MoveForward();
             }
+        
+
         }
 
     }

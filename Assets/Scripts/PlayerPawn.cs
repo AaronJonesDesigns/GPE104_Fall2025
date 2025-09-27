@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerPawn : Pawn
 {
+    // The component that handles shooting
+    public Shooter shooterComponent;
     // Variable to hold our sprite Transform information
     private Transform tf;
     // Variable to hold editable Local Movement (WASD) Units per second
@@ -85,6 +87,15 @@ public class PlayerPawn : Pawn
     public void TurboForward()
     {
         tf.position = tf.position + (tf.up * turboSpeed * Time.deltaTime);
+    }
+
+    void Update()
+    {
+        
+    }
+    public void Shoot()
+    {
+
     }
 
 }

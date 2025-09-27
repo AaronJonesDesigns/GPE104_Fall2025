@@ -6,10 +6,9 @@ public class Health : MonoBehaviour
     // Current Health
     private float currentHealth;
     [SerializeField] private float maxHealth;
-
-
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         // Start with max health
         currentHealth = maxHealth;
@@ -28,6 +27,14 @@ public class Health : MonoBehaviour
         {
             Die();
         }
+    }
+    public void TakeDamage(float damage, Controller damageDealer)
+    {
+        // TODO: Give points to the damage dealer for dealing damage
+        Debug.Log(damageDealer.gameObject.name + " did " + damage + " damage to " + this.gameObject.name);
+
+        // Actually take the damage
+        TakeDamage(damage);
     }
     public void Heal(float healAmount)
     {

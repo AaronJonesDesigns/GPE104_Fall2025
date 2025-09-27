@@ -3,7 +3,8 @@ using UnityEngine;
 public abstract class Pawn : MonoBehaviour
 {
     public Health health;
-    protected virtual void Start()
+    public Shooter shooter;
+    protected virtual void Awake()
     {
         // Load health component
         health = GetComponent<Health>();
@@ -12,5 +13,7 @@ public abstract class Pawn : MonoBehaviour
         {
             Debug.LogWarning(gameObject.name + " does not have a health component");
         }
+        // Load the shooter component
+        shooter = GetComponent<Shooter>();
     }
 }

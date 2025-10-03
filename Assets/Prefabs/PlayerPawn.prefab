@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2645584803209211291
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6452651126876734739}
+  m_Layer: 5
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6452651126876734739
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2645584803209211291}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.448, z: 0}
+  m_LocalScale: {x: 0.59341, y: 0.59341, z: 0.59341}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3758780148979589992}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6923375049791909922
 GameObject:
   m_ObjectHideFlags: 0
@@ -12,12 +43,15 @@ GameObject:
   - component: {fileID: 3945841838955262949}
   - component: {fileID: 7236011691711428877}
   - component: {fileID: 1044472111426022824}
+  - component: {fileID: 1045073380243402076}
   - component: {fileID: 4962731125261197357}
   - component: {fileID: 6294985644412148665}
   - component: {fileID: 6697270742973942138}
-  m_Layer: 0
+  - component: {fileID: 8013189023981502752}
+  - component: {fileID: 604881149971606641}
+  m_Layer: 6
   m_Name: PlayerPawn
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,10 +65,11 @@ Transform:
   m_GameObject: {fileID: 6923375049791909922}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.025, y: -0.3, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6452651126876734739}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3945841838955262949
@@ -83,8 +118,8 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -910207976613999885, guid: 6c4d1368541da7346bbfd087b9a29a7c, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: -6511610701255145038, guid: 9e20271c85a68594f9591852ae0d0bab, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -120,6 +155,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10e7f34fa7e55854bb911dc8a0f262c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathDestroy
+--- !u!114 &1045073380243402076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6923375049791909922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69976f5374ee70a4cb5449f6c543357f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  pawn: {fileID: 4962731125261197357}
 --- !u!114 &4962731125261197357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,10 +181,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPawn
   health: {fileID: 7236011691711428877}
-  moveSpeed: 5
-  worldMoveSpeed: 5
-  turboSpeed: 10
-  turnSpeed: 200
+  shooter: {fileID: 0}
+  shooterComponent: {fileID: 0}
+  moveSpeed: 1.25
+  worldMoveSpeed: 1.25
+  turboSpeed: 7
+  turnSpeed: 100
   minX: -8
   maxX: 8
   minY: -4.5
@@ -179,7 +229,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.99, y: 0.75}
+    oldSize: {x: 0.8, y: 0.98}
     newSize: {x: 0.99, y: 0.75}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -187,22 +237,17 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.48376998, y: 0.09131019}
-      - {x: 0.3648397, y: 0.015160494}
-      - {x: 0.14745975, y: 0.1507755}
-      - {x: 0.07885027, y: 0.36377}
-      - {x: -0.08815513, y: 0.36377007}
-      - {x: -0.145, y: 0.125}
-      - {x: -0.37168443, y: 0.014465287}
-      - {x: -0.49499997, y: 0.06692517}
-      - {x: -0.48376998, y: -0.25061497}
-      - {x: -0.40254012, y: -0.23446529}
-      - {x: -0.145, y: -0.295}
-      - {x: -0.095, y: -0.375}
-      - {x: 0.105, y: -0.375}
-      - {x: 0.16516054, y: -0.285}
-      - {x: 0.3876205, y: -0.22569522}
-      - {x: 0.49499997, y: -0.255}
+    - - {x: 0.124138, y: -0.23760359}
+      - {x: 0.24813706, y: -0.19376412}
+      - {x: 0.21567044, y: -0.0019439906}
+      - {x: 0.09642272, y: 0.06819038}
+      - {x: -0.046236068, y: 0.060141996}
+      - {x: -0.09516664, y: 0.07013632}
+      - {x: -0.21844822, y: -0.008222789}
+      - {x: -0.2833526, y: -0.16675918}
+      - {x: -0.12892926, y: -0.231002}
+      - {x: -0.070644945, y: -0.36507583}
+      - {x: 0.06674465, y: -0.37677455}
   m_UseDelaunayMesh: 0
 --- !u!50 &6697270742973942138
 Rigidbody2D:
@@ -231,3 +276,31 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &8013189023981502752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6923375049791909922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d99b17f61f4ed8648b02b4baff8b62b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Shooter
+  bulletToShoot: {fileID: 8746501342101606093, guid: bdfca4f2c1b33a649b8b3c1ed16053bc, type: 3}
+  firePoint: {fileID: 6452651126876734739}
+--- !u!114 &604881149971606641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6923375049791909922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 050fa439c7c2af34c9a891cb035f1dce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageOnCollision
+  selfDestructOnCollision: 0
+  damageDone: 1

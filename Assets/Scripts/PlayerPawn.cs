@@ -18,7 +18,7 @@ public class PlayerPawn : Pawn
     public float minX = -8f;
     public float maxX = 8f;
     public float minY = -4.5f;
-    public float maxY = -4.5f;
+    public float maxY = 4.5f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -91,7 +91,7 @@ public class PlayerPawn : Pawn
 
     void Update()
     {
-        
+
     }
     public void Shoot()
     {

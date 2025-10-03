@@ -14,9 +14,11 @@ GameObject:
   - component: {fileID: 3938550072192998302}
   - component: {fileID: 2896988852097701934}
   - component: {fileID: 7279447955870439308}
-  - component: {fileID: 848004838975886102}
   - component: {fileID: -3786637522386644323}
-  m_Layer: 7
+  - component: {fileID: -1912123297230544019}
+  - component: {fileID: -9132012315126866720}
+  - component: {fileID: 1332501011564123568}
+  m_Layer: 6
   m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,8 +86,8 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -2346302928887187388, guid: 2b1b8056f6d8b1f45a1f2879e054237b, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 4815476061570213978, guid: a3e7e6c31673f8a43b9bbf580b52ee40, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -122,6 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 050fa439c7c2af34c9a891cb035f1dce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageOnCollision
+  selfDestructOnCollision: 1
   damageDone: 1
 --- !u!114 &2896988852097701934
 MonoBehaviour:
@@ -172,18 +175,6 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.045
---- !u!114 &848004838975886102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5267179657361800153}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 743968b527268f34c84706a3a4a8bb77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DestroySelf
 --- !u!50 &-3786637522386644323
 Rigidbody2D:
   serializedVersion: 5
@@ -211,3 +202,40 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-1912123297230544019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5267179657361800153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c56d4a68fa54ea458a319c9dd3b44df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxHealth: 1
+--- !u!114 &-9132012315126866720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5267179657361800153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10e7f34fa7e55854bb911dc8a0f262c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathDestroy
+--- !u!114 &1332501011564123568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5267179657361800153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 743968b527268f34c84706a3a4a8bb77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestroySelf

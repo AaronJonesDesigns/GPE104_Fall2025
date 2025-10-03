@@ -19,7 +19,6 @@ public class Health : MonoBehaviour
     {
 
     }
-
     public void TakeDamage(float damage)
     {
         currentHealth = currentHealth - damage;
@@ -54,6 +53,7 @@ public class Health : MonoBehaviour
         }
         else
         {
+            // Debug: No death component warning
             Debug.LogWarning("Warning: " + gameObject.name + " has no death component.");
         }
     }

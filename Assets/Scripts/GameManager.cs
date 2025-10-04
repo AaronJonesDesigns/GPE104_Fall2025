@@ -19,20 +19,44 @@ public class GameManager : MonoBehaviour
     public float topScore;
     public int maxLives;
     public int currentLives;
-    public float meteorSpawnInterval = 3f; // seconds
+    // Public Meteor spawn rate
+    public float meteorSpawnInterval = 3f;
+
     private float meteorTimer = 0f;
     public List<Transform> meteorSpawnPoints;
+    // DeathTargets counter
+    private int deathTargetCount = 0;
 
-    void Awake()
+    private void Awake()
     {
-        if (instance != null && instance != this)
-        {
+        // Singleton setup (only one GameManager!)
+        if (instance == null) 
+            instance = this;
+        else 
             Destroy(gameObject);
-            return;
-        }
+    }
+    // Get Public variable so it can be used by other scripts
+    public int DeathTargetCount => deathTargetCount;
 
-        instance = this;
-        DontDestroyOnLoad(gameObject);
+    // Called when a DeathTarget is spawned
+    public void RegisterDeathTarget()
+    {
+        // DeathTarget counter +1
+        deathTargetCount++;
+        Debug.Log("DeathTarget Added. Count = " + deathTargetCount);
+    }
+
+    // Called when a DeathTarget is destroyed
+    public void UnregisterDeathTarget()
+    {
+        // DeathTarget counter -1
+        deathTargetCount--;
+        Debug.Log("DeathTarget Removed. Count = " + deathTargetCount);
+    }
+    // Public active DeathTarget check
+    public int GetDeathTargetCount()
+    {
+        return deathTargetCount;
     }
 
     public void Start()
@@ -66,6 +90,7 @@ public class GameManager : MonoBehaviour
             meteorTimer = 0f;
         }
     }
+    //Get random spawn point from the list of spawn points
     public Vector3 GetRandomSpawnPoint()
     {
         if (meteorSpawnPoints == null || meteorSpawnPoints.Count == 0)
@@ -73,27 +98,27 @@ public class GameManager : MonoBehaviour
             Debug.LogError("No meteor spawn points assigned!");
             return Vector3.zero;
         }
-        
-    return meteorSpawnPoints[Random.Range(0, meteorSpawnPoints.Count)].position;
+
+        return meteorSpawnPoints[Random.Range(0, meteorSpawnPoints.Count)].position;
     }
+    // HomePlanet spawner
     public void SpawnPlanet()
     {
-        Debug.Log("SpawnPlanet() called");
+        Debug.Log("SpawnPlanet() is happening now!");
 
         GameObject homePlanet = Instantiate(planetPrefab, Vector3.zero, Quaternion.identity);
     }
-
+    // Random location Meteor spawner
     public void SpawnMeteor()
     {
-        Debug.Log("SpawnMeteor() called");
+        Debug.Log("SpawnMeteor() happened.  In-coming!");
 
         GameObject newMeteor = Instantiate(meteorPrefab, GetRandomSpawnPoint(), Quaternion.identity);
         newMeteor.transform.Rotate(0.0f, 0.0f, Random.Range(0.0f, 360.0f));
     }
-
+    //Controller spawner
     public void SpawnPlayerController()
     {
-        Debug.Log("Spawning player controller...");
 
         GameObject newControllersObject = Instantiate(playerControllerPrefab, Vector3.zero, Quaternion.identity);
         PlayerController newPlayerControllerComponent = newControllersObject.GetComponent<PlayerController>();
@@ -101,62 +126,35 @@ public class GameManager : MonoBehaviour
         if (newPlayerControllerComponent != null)
         {
             players.Add(newPlayerControllerComponent);
-            Debug.Log("Added PlayerController. Count = " + players.Count);
-        }
-        else
-        {
-            Debug.LogError("PlayerControllerPrefab is missing PlayerController script!");
         }
     }
-
+    //Player spawner
     public void SpawnPlayer()
     {
-        Debug.Log("SpawnPlayer() called");
-
+        // Make sure at least one controller exists
         if (players.Count == 0)
         {
-            Debug.LogError("No players in list! Did SpawnPlayerController() fail?");
             return;
         }
-
+        // Always work with the first player
         PlayerController playerController = players[0];
 
+        // Check for existing pawn and kill it if it does
         if (playerController.pawn != null)
-        {
             Destroy(playerController.pawn.gameObject);
-            playerController.pawn = null;
-        }
 
-        GameObject newPawnObject = Instantiate(playerPawnPrefab, new Vector3(0, 0,-0.1f), Quaternion.identity);
+        // Spawn new pawn in front of the planet
+        GameObject newPawnObject = Instantiate(playerPawnPrefab, new Vector3(0, 0, -0.1f), Quaternion.identity);
 
-        if (newPawnObject != null)
+        // Assign pawn to controller
+        playerController.pawn = newPawnObject.GetComponent<PlayerPawn>();
+
+        // Assign camera follow
+        if (Camera.main != null)
         {
-            PlayerPawn newPawn = newPawnObject.GetComponent<PlayerPawn>();
-            if (newPawn != null)
-            {
-                // Link pawn to controller
-                playerController.pawn = newPawn;
-                Debug.Log("Spawned PlayerPawn and assigned it to PlayerController");
-
-                // Auto-assign camera 
-                if (Camera.main != null)
-                {
-                    CameraFollow cf = Camera.main.GetComponent<CameraFollow>();
-                    if (cf != null)
-                    {
-                        cf.target = newPawn.transform; // <-- inside same scope as newPawn
-                        Debug.Log("[GameManager] CameraFollow target set to new pawn.");
-                    }
-                }
-            }
-            else
-            {
-                Debug.LogError("Spawned pawn prefab does NOT have a PlayerPawn component!");
-            }
-        }
-        else
-        {
-            Debug.LogError("Failed to instantiate PlayerPawn prefab!");
+            CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
+            if (cameraFollow != null && playerController.pawn != null)
+                cameraFollow.target = playerController.pawn.transform;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,20 +20,28 @@ public class GameManager : MonoBehaviour
     public float topScore;
     public int maxLives;
     public int currentLives;
-    // Public Meteor spawn rate
-    public float meteorSpawnInterval = 3f;
 
+    [Header("Meteor Spawning")]
+    public float meteorSpawnInterval = 3f;
     private float meteorTimer = 0f;
     public List<Transform> meteorSpawnPoints;
-    // DeathTargets counter
+
+    [Header("Death Target Tracking")]
     private int deathTargetCount = 0;
+
+    [Header("Countdown Timer")]
+    private float currentTime;
+
+    private bool gameEnded = false;
+    public TextMeshProUGUI timerText;
+    public float countdownTime = 60f;
 
     private void Awake()
     {
-        // Singleton setup (only one GameManager!)
-        if (instance == null) 
+        // Singleton setup (ONE Game Manager to control them all!)
+        if (instance == null)
             instance = this;
-        else 
+        else
             Destroy(gameObject);
     }
     // Get Public variable so it can be used by other scripts
@@ -45,21 +54,7 @@ public class GameManager : MonoBehaviour
         deathTargetCount++;
         Debug.Log("DeathTarget Added. Count = " + deathTargetCount);
     }
-
-    // Called when a DeathTarget is destroyed
-    public void UnregisterDeathTarget()
-    {
-        // DeathTarget counter -1
-        deathTargetCount--;
-        Debug.Log("DeathTarget Removed. Count = " + deathTargetCount);
-    }
-    // Public active DeathTarget check
-    public int GetDeathTargetCount()
-    {
-        return deathTargetCount;
-    }
-
-    public void Start()
+public void Start()
     {
         // Make players list
         players = new List<PlayerController>();
@@ -69,12 +64,18 @@ public class GameManager : MonoBehaviour
 
         // Spawn the Player Pawn
         SpawnPlayer();
+        // Spawn the HomePlanet
         SpawnPlanet();
+        // Spawn the Meteor x 3
         SpawnMeteor();
         SpawnMeteor();
         SpawnMeteor();
-    }
 
+        // Initialize the timer
+        currentTime = countdownTime;
+        // Show starting time immediately
+        UpdateTimerUI();
+    }
     void Update()
     {
         // Add the time (in seconds) since the last frame to our timer
@@ -89,7 +90,60 @@ public class GameManager : MonoBehaviour
             // Reset the timer back to 0 so we can count up again
             meteorTimer = 0f;
         }
+        // Meteor spawning
+        meteorTimer += Time.deltaTime;
+        if (meteorTimer >= meteorSpawnInterval)
+        {
+            SpawnMeteor();
+            meteorTimer = 0f;
+        }
+        // Tick the countdown timer
+        if (currentTime > 0)
+        {
+            currentTime -= Time.deltaTime;
+            if (currentTime < 0)
+                currentTime = 0;
+
+            UpdateTimerUI();
+        }
+        // Update UI text
+        if (timerText != null)
+            timerText.text = Mathf.Ceil(currentTime).ToString();
+
+        // Check for victory
+        if (currentTime <= 0 && !gameEnded)
+        {
+            gameEnded = true;
+            Debug.Log("Victory! The player survived until the timer ran out.");
+        }
+
+        // Meteor spawn logic
+        meteorTimer += Time.deltaTime;
+        if (meteorTimer >= meteorSpawnInterval)
+        {
+            SpawnMeteor();
+            meteorTimer = 0f;
+        }
     }
+    private void UpdateTimerUI()
+    {
+        // Show whole seconds on UI
+        if (timerText != null)
+            timerText.text = Mathf.CeilToInt(currentTime).ToString();
+    }
+    // Called when a DeathTarget is destroyed
+    public void UnregisterDeathTarget()
+    {
+        // DeathTarget counter -1
+        deathTargetCount--;
+        Debug.Log("DeathTarget Removed. Count = " + deathTargetCount);
+    }
+    // Public active DeathTarget check
+    public int GetDeathTargetCount()
+    {
+        return deathTargetCount;
+    }
+
     //Get random spawn point from the list of spawn points
     public Vector3 GetRandomSpawnPoint()
     {
@@ -104,15 +158,11 @@ public class GameManager : MonoBehaviour
     // HomePlanet spawner
     public void SpawnPlanet()
     {
-        Debug.Log("SpawnPlanet() is happening now!");
-
         GameObject homePlanet = Instantiate(planetPrefab, Vector3.zero, Quaternion.identity);
     }
     // Random location Meteor spawner
     public void SpawnMeteor()
     {
-        Debug.Log("SpawnMeteor() happened.  In-coming!");
-
         GameObject newMeteor = Instantiate(meteorPrefab, GetRandomSpawnPoint(), Quaternion.identity);
         newMeteor.transform.Rotate(0.0f, 0.0f, Random.Range(0.0f, 360.0f));
     }

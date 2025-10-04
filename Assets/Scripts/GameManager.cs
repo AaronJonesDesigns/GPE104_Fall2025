@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     public float topScore;
     public int maxLives;
     public int currentLives;
+    public PlayerPawn playerPawn;
+    public GameObject homePlanet;
 
     [Header("Meteor Spawning")]
     public float meteorSpawnInterval = 3f;
@@ -44,17 +46,7 @@ public class GameManager : MonoBehaviour
         else
             Destroy(gameObject);
     }
-    // Get Public variable so it can be used by other scripts
-    public int DeathTargetCount => deathTargetCount;
-
-    // Called when a DeathTarget is spawned
-    public void RegisterDeathTarget()
-    {
-        // DeathTarget counter +1
-        deathTargetCount++;
-        Debug.Log("DeathTarget Added. Count = " + deathTargetCount);
-    }
-public void Start()
+    public void Start()
     {
         // Make players list
         players = new List<PlayerController>();
@@ -75,6 +67,7 @@ public void Start()
         currentTime = countdownTime;
         // Show starting time immediately
         UpdateTimerUI();
+
     }
     void Update()
     {
@@ -90,13 +83,7 @@ public void Start()
             // Reset the timer back to 0 so we can count up again
             meteorTimer = 0f;
         }
-        // Meteor spawning
-        meteorTimer += Time.deltaTime;
-        if (meteorTimer >= meteorSpawnInterval)
-        {
-            SpawnMeteor();
-            meteorTimer = 0f;
-        }
+        
         // Tick the countdown timer
         if (currentTime > 0)
         {
@@ -106,15 +93,32 @@ public void Start()
 
             UpdateTimerUI();
         }
-        // Update UI text
-        if (timerText != null)
-            timerText.text = Mathf.Ceil(currentTime).ToString();
+        // Stop updating if the game already ended
+        if (gameEnded) return;
 
-        // Check for victory
-        if (currentTime <= 0 && !gameEnded)
+        // Countdown logic
+        currentTime -= Time.deltaTime;
+        currentTime = Mathf.Max(currentTime, 0);
+
+        // Update the UI text
+        if (timerText != null)
         {
+            timerText.text = "Meteor Timer: " + currentTime.ToString("F1");
+        }
+
+        // Victory checker
+        if (currentTime <= 0)
+        {
+            Debug.Log("Victory! You survived and saved Home Planet!");
             gameEnded = true;
-            Debug.Log("Victory! The player survived until the timer ran out.");
+            return;
+        }
+
+        // Failure checker (Player or Planet dead)
+        if (playerPawn == null || homePlanet == null)
+        {
+            Debug.Log("Game Over! You are a complete failure at life!");
+            gameEnded = true;
         }
 
         // Meteor spawn logic
@@ -130,6 +134,16 @@ public void Start()
         // Show whole seconds on UI
         if (timerText != null)
             timerText.text = Mathf.CeilToInt(currentTime).ToString();
+    }
+    // Get Public variable so it can be used by other scripts
+    public int DeathTargetCount => deathTargetCount;
+
+    // Called when a DeathTarget is spawned
+    public void RegisterDeathTarget()
+    {
+        // DeathTarget counter +1
+        deathTargetCount++;
+        Debug.Log("DeathTarget Added. Count = " + deathTargetCount);
     }
     // Called when a DeathTarget is destroyed
     public void UnregisterDeathTarget()
@@ -149,7 +163,6 @@ public void Start()
     {
         if (meteorSpawnPoints == null || meteorSpawnPoints.Count == 0)
         {
-            Debug.LogError("No meteor spawn points assigned!");
             return Vector3.zero;
         }
 
@@ -158,7 +171,8 @@ public void Start()
     // HomePlanet spawner
     public void SpawnPlanet()
     {
-        GameObject homePlanet = Instantiate(planetPrefab, Vector3.zero, Quaternion.identity);
+        // Spawn the planet and store a reference
+        homePlanet = Instantiate(planetPrefab, Vector3.zero, Quaternion.identity);
     }
     // Random location Meteor spawner
     public void SpawnMeteor()
@@ -178,33 +192,30 @@ public void Start()
             players.Add(newPlayerControllerComponent);
         }
     }
-    //Player spawner
+    // Player spawner
     public void SpawnPlayer()
     {
-        // Make sure at least one controller exists
-        if (players.Count == 0)
-        {
-            return;
-        }
-        // Always work with the first player
+        if (players.Count == 0) return;
+
         PlayerController playerController = players[0];
 
-        // Check for existing pawn and kill it if it does
+        // Destroy existing pawn if any
         if (playerController.pawn != null)
             Destroy(playerController.pawn.gameObject);
 
-        // Spawn new pawn in front of the planet
+        // Spawn new pawn and assign references
         GameObject newPawnObject = Instantiate(playerPawnPrefab, new Vector3(0, 0, -0.1f), Quaternion.identity);
 
-        // Assign pawn to controller
-        playerController.pawn = newPawnObject.GetComponent<PlayerPawn>();
+        // Store in both controller and GameManager
+        playerPawn = newPawnObject.GetComponent<PlayerPawn>();
+        playerController.pawn = playerPawn;
 
         // Assign camera follow
         if (Camera.main != null)
         {
             CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
-            if (cameraFollow != null && playerController.pawn != null)
-                cameraFollow.target = playerController.pawn.transform;
+            if (cameraFollow != null && playerPawn != null)
+                cameraFollow.target = playerPawn.transform;
         }
     }
 }
